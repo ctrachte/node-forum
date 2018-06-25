@@ -22,21 +22,19 @@ describe("routes : static", () => {
     });
 
   });
-//#1
   describe("GET /marco", () => {
 
-//#2
     it("should return the message 'Polo'", (done) => {
-
-//#3
       request.get(marco, (err, res, body) => {
-        expect(res.statusCode).toBe(200);
         expect(body).toBe("Polo");
-
-//#4
         done();
       });
     });
-
+    it("should return the status 200", (done) => {
+      request.get(marco, (err, res, body) => {
+        expect(res.statusCode).toBe(200);
+        done();
+      });
+    });
   });
 });
