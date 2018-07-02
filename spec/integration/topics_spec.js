@@ -38,6 +38,5 @@ describe("routes : topics", () => {
         done();
       });
     });
-
   });
 });
