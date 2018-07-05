@@ -10,10 +10,11 @@
       <h1>Topics</h1>
 
       <ul class="list-group">
-<!-- #1 -->
+        <li class="list-group-item">
+          <a href="/topics/new"> Create New Topic </a>
+        </li>
         <% topics.forEach((topic) => { %>
-<!-- #2 -->
-          <li class="list-group-item">
+           <li class="list-group-item">
             <a href="/topics/<%= topic.id %>"> <%= topic.title %> </a>
           </li>
         <% }) %>
