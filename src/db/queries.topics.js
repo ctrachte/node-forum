@@ -22,5 +22,14 @@ module.exports = {
     .catch((err) => {
       callback(err);
     })
+  },
+  getTopic(id, callback){
+    return Topic.findById(id)
+    .then((topic) => {
+      callback(null, topic);
+    })
+    .catch((err) => {
+      callback(err);
+    })
   }
 }
