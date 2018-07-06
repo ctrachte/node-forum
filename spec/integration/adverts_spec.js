@@ -10,7 +10,7 @@ describe("routes : adverts", () => {
     this.advert;
     sequelize.sync({force: true}).then((res) => {
 
-     Topic.create({
+     Advert.create({
        title: "JS Frameworks",
        description: "There is a lot of them"
      })
@@ -33,7 +33,7 @@ describe("routes : adverts", () => {
       request.get(base, (err, res, body) => {
         expect(res.statusCode).toBe(200);
         expect(err).toBeNull();
-        expect(body).toContain("Topics");
+        expect(body).toContain("Advertisements");
         expect(body).toContain("JS Frameworks");
         done();
       });
@@ -44,7 +44,7 @@ describe("routes : adverts", () => {
     it("should render a new advert form", (done) => {
       request.get(`${base}new`, (err, res, body) => {
         expect(err).toBeNull();
-        expect(body).toContain("New Topic");
+        expect(body).toContain("New Advert");
         done();
       });
     });
@@ -65,7 +65,7 @@ describe("routes : adverts", () => {
       request.post(options,
 
         (err, res, body) => {
-          Topic.findOne({where: {title: "blink-182 songs"}})
+          Advert.findOne({where: {title: "blink-182 songs"}})
           .then((advert) => {
             expect(res.statusCode).toBe(303);
             expect(advert.title).toBe("blink-182 songs");
@@ -95,7 +95,7 @@ describe("routes : adverts", () => {
 
     it("should delete the advert with the associated ID", (done) => {
 
-      Topic.all()
+      Advert.all()
       .then((adverts) => {
 
         const advertCountBeforeDelete = adverts.length;
@@ -103,7 +103,7 @@ describe("routes : adverts", () => {
         expect(advertCountBeforeDelete).toBe(1);
 
         request.post(`${base}${this.advert.id}/destroy`, (err, res, body) => {
-          Topic.all()
+          Advert.all()
           .then((adverts) => {
             expect(err).toBeNull();
             expect(adverts.length).toBe(advertCountBeforeDelete - 1);
@@ -121,7 +121,7 @@ describe("routes : adverts", () => {
     it("should render a view with an edit advert form", (done) => {
       request.get(`${base}${this.advert.id}/edit`, (err, res, body) => {
         expect(err).toBeNull();
-        expect(body).toContain("Edit Topic");
+        expect(body).toContain("Edit Advert");
         expect(body).toContain("JS Frameworks");
         done();
       });
@@ -142,7 +142,7 @@ describe("routes : adverts", () => {
           (err, res, body) => {
 
           expect(err).toBeNull();
-          Topic.findOne({
+          Advert.findOne({
             where: { id: this.advert.id }
           })
           .then((advert) => {

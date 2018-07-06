@@ -2,7 +2,7 @@ const advertQueries = require("../db/queries.adverts.js");
 
 module.exports = {
   index(req, res, next){
-    advertQueries.getAllTopics((err, adverts) => {
+    advertQueries.getAllAdverts((err, adverts) => {
       if(err){
         res.redirect(500, "static/index");
       } else {
@@ -14,11 +14,11 @@ module.exports = {
     res.render("adverts/new");
   },
   create(req, res, next){
-    let newTopic = {
+    let newAdvert = {
       title: req.body.title,
       description: req.body.description
     };
-    advertQueries.addTopic(newTopic, (err, advert) => {
+    advertQueries.addAdvert(newAdvert, (err, advert) => {
       if(err){
         res.redirect(500, "/adverts/new");
       } else {
@@ -28,7 +28,7 @@ module.exports = {
   },
   show(req, res, next){
 
-    advertQueries.getTopic(req.params.id, (err, advert) => {
+    advertQueries.getAdvert(req.params.id, (err, advert) => {
 
       if(err || advert == null){
         res.redirect(404, "/");
@@ -38,7 +38,7 @@ module.exports = {
     });
   },
   destroy(req, res, next){
-    advertQueries.deleteTopic(req.params.id, (err, advert) => {
+    advertQueries.deleteAdvert(req.params.id, (err, advert) => {
       if(err){
         res.redirect(500, `/adverts/${advert.id}`)
       } else {
@@ -47,7 +47,7 @@ module.exports = {
     });
   },
   edit(req, res, next){
-    advertQueries.getTopic(req.params.id, (err, advert) => {
+    advertQueries.getAdvert(req.params.id, (err, advert) => {
       if(err || advert == null){
         res.redirect(404, "/");
       } else {
@@ -57,7 +57,7 @@ module.exports = {
   },
   update(req, res, next){
 
-    advertQueries.updateTopic(req.params.id, req.body, (err, advert) => {
+    advertQueries.updateAdvert(req.params.id, req.body, (err, advert) => {
 
       if(err || advert == null){
         res.redirect(404, `/adverts/${req.params.id}/edit`);
