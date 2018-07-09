@@ -9,6 +9,7 @@ describe("Topic", () => {
     this.post;
     sequelize.sync({force: true}).then((res) => {
 
+      // dummy topic and post to ensure getTopic returns only the correct posts
       Topic.create({
         title: "Expeditions to Alpha Centauri",
         description: "A compilation of reports from recent visits to the star system."
@@ -18,6 +19,32 @@ describe("Topic", () => {
         Post.create({
           title: "My first visit to Proxima Centauri b",
           body: "I saw some rocks.",
+          topicId: this.topic.id
+        })
+        .then((post) => {
+          this.post = post;
+          done();
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        done();
+      });
+      // this is the topic and posts that getTopic should return.
+      Topic.create({
+        title: "Expeditions to the moon",
+        description: "A compilation of visits to the earths moon."
+      })
+      .then((topic) => {
+        this.topic = topic;
+        Post.create({
+          title: "USA",
+          body: "1969",
+          topicId: this.topic.id
+        });
+        Post.create({
+          title: "the rest of the world",
+          body: "none",
           topicId: this.topic.id
         })
         .then((post) => {
@@ -51,7 +78,7 @@ describe("Topic", () => {
           done();
         });
       });
-      it("should not create a Topic with missing description", (done) => {
+      it("should not create a Topic without a description", (done) => {
         Topic.create({
           title: "Where to go if you are stuck in Bloc"
         })
