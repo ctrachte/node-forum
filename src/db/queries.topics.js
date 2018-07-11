@@ -12,6 +12,7 @@ module.exports = {
       callback(err);
     })
   },
+
   addTopic(newTopic, callback){
     return Topic.create({
       title: newTopic.title,
@@ -24,14 +25,15 @@ module.exports = {
       callback(err);
     })
   },
+
   getTopic(id, callback){
-    return Topic.findById(id)
-    return Topic.findById(id, {
-      include: [{
-        model: Post,
-        as: "posts"
-      }]
-    })
+   return Topic.findById(id, {
+
+     include: [{
+       model: Post,
+       as: "posts"
+     }]
+   })
     .then((topic) => {
       callback(null, topic);
     })
@@ -39,6 +41,7 @@ module.exports = {
       callback(err);
     })
   },
+
   deleteTopic(id, callback){
     return Topic.destroy({
       where: {id}
@@ -50,6 +53,7 @@ module.exports = {
       callback(err);
     })
   },
+  
   updateTopic(id, updatedTopic, callback){
     return Topic.findById(id)
     .then((topic) => {
