@@ -62,4 +62,34 @@ describe("routes : flairs", () => {
     });
 
   });
+  describe("POST /topics/:topicId/posts/:postId/flairs/create", () => {
+
+    it("should create a new flair and redirect", (done) => {
+       const options = {
+         url: `${base}/${this.topic.id}/posts/${this.post.id}/flairs/create`,
+         form: {
+           name: "Snow",
+           color: "White"
+         }
+       };
+       request.post(options,
+         (err, res, body) => {
+
+           Flair.findOne({where: {name: "Snow"}})
+           .then((flair) => {
+             expect(flair).not.toBeNull();
+             expect(flair.name).toBe("Snow");
+             expect(flair.color).toBe("White");
+             expect(flair.postId).not.toBeNull();
+             done();
+           })
+           .catch((err) => {
+             console.log(err);
+             done();
+           });
+         }
+       );
+     });
+
+  });
 });
