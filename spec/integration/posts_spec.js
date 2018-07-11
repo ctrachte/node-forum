@@ -79,17 +79,17 @@ describe("routes : posts", () => {
       });
 
    });
-  describe("GET /topics/:topicId/posts/:id", () => {
-
-   it("should render a view with the selected post", (done) => {
-     request.get(`${base}/${this.topic.id}/posts/${this.post.id}`, (err, res, body) => {
-       expect(err).toBeNull();
-       expect(body).toContain("Snowball Fighting");
-       done();
-     });
-   });
-
-  });
+  // describe("GET /topics/:topicId/posts/:id", () => {
+  //
+  //  it("should render a view with the selected post", (done) => {
+  //    request.get(`${base}/${this.topic.id}/posts/${this.post.id}`, (err, res, body) => {
+  //      expect(err).toBeNull();
+  //      expect(body).toContain("Snowball Fighting");
+  //      done();
+  //    });
+  //  });
+  //
+  // });
   describe("POST /topics/:topicId/posts/:id/destroy", () => {
 
     it("should delete the post with the associated ID", (done) => {
