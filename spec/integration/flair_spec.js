@@ -92,4 +92,15 @@ describe("routes : flairs", () => {
      });
 
   });
+  describe("GET /topics/:topicId/posts/:postId/flairs/:id", () => {
+
+    it("should render a view with the selected flair", (done) => {
+      request.get(`${base}/${this.topic.id}/posts/${this.post.id}/flairs/${this.flair.id}`, (err, res, body) => {
+        expect(err).toBeNull();
+        expect(body).toContain("Blue");
+        done();
+      });
+    });
+
+  });
 });
