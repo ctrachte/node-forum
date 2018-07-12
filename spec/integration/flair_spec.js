@@ -92,17 +92,6 @@ describe("routes : flairs", () => {
      });
 
   });
-  describe("GET /topics/:topicId/posts/:postId/flairs/:id", () => {
-
-    it("should render a view with the selected flair", (done) => {
-      request.get(`${base}/${this.topic.id}/posts/${this.post.id}/flairs/${this.flair.id}`, (err, res, body) => {
-        expect(err).toBeNull();
-        expect(body).toContain("Blue");
-        done();
-      });
-    });
-
-  });
   describe("POST /topics/:topicId/posts/:postId/flairs/:id/destroy", () => {
 
     it("should delete the flair with the associated ID", (done) => {
@@ -122,4 +111,54 @@ describe("routes : flairs", () => {
     });
 
   });
+  describe("GET /topics/:topicId/posts/:postId/flairs/:id/edit", () => {
+
+    it("should render a view with an edit flair form", (done) => {
+      request.get(`${base}/${this.topic.id}/posts/${this.post.id}/flairs/${this.flair.id}/edit`, (err, res, body) => {
+        expect(err).toBeNull();
+        expect(body).toContain("Change Flair");
+        expect(body).toContain("blue");
+        done();
+      });
+    });
+
+  });
+  describe("POST /topics/:topicId/posts/:postId/flairs/:id/update", () => {
+
+     it("should return a status code 302", (done) => {
+       request.post({
+         url: `${base}/${this.post.topicId}/posts/${this.flair.postId}/flairs/${this.flair.id}/update`,
+         form: {
+           name: "Red",
+           color: "red"
+         }
+       }, (err, res, body) => {
+         expect(res.statusCode).toBe(302);
+         done();
+       });
+     });
+
+     it("should update the flair with the given values", (done) => {
+         const options = {
+           url: `${base}/${this.topic.id}/posts/${this.flair.postId}/flairs/${this.flair.id}/update`,
+           form: {
+             name: "Red"
+           }
+         };
+         request.post(options,
+           (err, res, body) => {
+
+           expect(err).toBeNull();
+
+           Flair.findOne({
+             where: {id: this.flair.id}
+           })
+           .then((flair) => {
+             expect(flair.name).toBe("Red");
+             done();
+           });
+         });
+     });
+
+   });
 });
