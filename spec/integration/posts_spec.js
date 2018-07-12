@@ -161,9 +161,10 @@ describe("routes : posts", () => {
 
      it("should update the post with the given values", (done) => {
          const options = {
-           url: `${base}/${this.topic.id}/posts/${this.post.id}/update`,
+           url: `${base}/${this.post.topicId}/posts/${this.post.id}/update`,
            form: {
-             title: "Snowman Building Competition"
+             title: "Snowman Building Competition",
+             body: "I love watching them melt quickly."
            }
          };
          request.post(options,
