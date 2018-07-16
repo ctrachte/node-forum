@@ -9,6 +9,7 @@ describe("routes : topics", () => {
 
   beforeEach((done) => { // before each context
     this.topic;   // define variables and bind to context
+    this.user;
     sequelize.sync({ force: true }).then(() => {  // clear database
       Topic.create({
         title: "JS Frameworks",

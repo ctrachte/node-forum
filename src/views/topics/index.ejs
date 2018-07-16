@@ -9,10 +9,12 @@
 
       <h1>Topics</h1>
 
+      <% if(currentUser && currentUser.isAdmin()) { %>
+        <a href="/topics/new" class="btn btn-success">New Topic</a>
+      <% } %>
+
       <ul class="list-group">
-        <li class="list-group-item">
-          <a href="/topics/new"> Create New Topic </a>
-        </li>
+
         <% topics.forEach((topic) => { %>
            <li class="list-group-item">
             <a href="/topics/<%= topic.id %>"> <%= topic.title %> </a>
