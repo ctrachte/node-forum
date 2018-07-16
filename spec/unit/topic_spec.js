@@ -1,70 +1,55 @@
 const sequelize = require("../../src/db/models/index").sequelize;
 const Topic = require("../../src/db/models").Topic;
 const Post = require("../../src/db/models").Post;
+const User = require("../../src/db/models").User;
 
 describe("Topic", () => {
 
   beforeEach((done) => {
-    this.topic;
-    this.post;
-    sequelize.sync({force: true}).then((res) => {
+      this.topic;
+      this.post;
+      this.user;
 
-      // dummy topic and post to ensure getTopic returns only the correct posts
-      Topic.create({
-        title: "Expeditions to Alpha Centauri",
-        description: "A compilation of reports from recent visits to the star system."
-      })
-      .then((topic) => {
-        this.topic = topic;
-        Post.create({
-          title: "My first visit to Proxima Centauri b",
-          body: "I saw some rocks.",
-          topicId: this.topic.id
+      sequelize.sync({force: true}).then((res) => {
+
+        User.create({
+          email: "starman@tesla.com",
+          password: "Trekkie4lyfe"
         })
-        .then((post) => {
-          this.post = post;
-          done();
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-        done();
-      });
-      // this is the topic and posts that getTopic should return.
-      Topic.create({
-        title: "Expeditions to the moon",
-        description: "A compilation of visits to the earths moon."
-      })
-      .then((topic) => {
-        this.topic = topic;
-        Post.create({
-          title: "USA",
-          body: "1969",
-          topicId: this.topic.id
-        });
-        Post.create({
-          title: "the rest of the world",
-          body: "none",
-          topicId: this.topic.id
+        .then((user) => {
+          this.user = user; //store the user
+
+          Topic.create({
+            title: "Expeditions to Alpha Centauri",
+            description: "A compilation of reports from recent visits to the star system.",
+
+            posts: [{
+              title: "My first visit to Proxima Centauri b",
+              body: "I saw some rocks.",
+              userId: this.user.id
+            }]
+          }, {
+
+            include: {
+              model: Post,
+              as: "posts"
+            }
+          })
+          .then((topic) => {
+            this.topic = topic; //store the topic
+            this.post = topic.posts[0]; //store the post
+            done();
+          })
         })
-        .then((post) => {
-          this.post = post;
-          done();
-        });
-      })
-      .catch((err) => {
-        console.log(err);
-        done();
       });
     });
-
-  });
-  describe("#create()", () => {
+    describe("#create()", () => {
 
       it("should create a topic object with a title, and body", (done) => {
         Topic.create({
           title: "Where to go if you are stuck in Bloc",
           description: "Sometimes we get stuck on checkpoints...",
+          userId: this.user.id
         })
         .then((topic) => {
 
