@@ -1,15 +1,14 @@
 const request = require("request");
 const server = require("../../src/server");
 const base = "http://localhost:3000/topics/";
-const sequelize = require("../../src/db/models/index").sequelize;
+
+const sequelize = require('../../src/db/models/index').sequelize;
 const Topic = require("../../src/db/models").Topic;
-const User = require("../../src/db/models").User;
 
 describe("routes : topics", () => {
 
   beforeEach((done) => { // before each context
     this.topic;   // define variables and bind to context
-    this.user;
     sequelize.sync({ force: true }).then(() => {  // clear database
       Topic.create({
         title: "JS Frameworks",
