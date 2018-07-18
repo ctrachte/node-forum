@@ -47,7 +47,7 @@ describe("routes : posts", () => {
   describe("admin user performing CRUD actions for Posts", () => {
 
    // before each test in admin user context, send an authentication request
-         // to a route we will create to mock an authentication request
+   // to a route we will create to mock an authentication request
     beforeEach((done) => {
      User.create({
        email: "admin@example.com",
@@ -217,10 +217,10 @@ describe("routes : posts", () => {
      });
    });
    // end admin user specs, begin member user specs
-  describe("member user performing CRUD actions for Posts", () => {
+  describe("member user performing CRUD actions for another users Posts", () => {
 
-    // before each test in admin user context, send an authentication request
-          // to a route we will create to mock an authentication request
+    // before each test in member user context, send an authentication request
+    // to a route we will create to mock an authentication request
      beforeEach((done) => {
       User.create({
         email: "user@example.com",
@@ -387,4 +387,93 @@ describe("routes : posts", () => {
 
       });
     });
+  describe("member user performing CRUD actions for their own Posts", () => {
+
+      // before each test in member user context, send an authentication request
+      // to a route we will create to mock an authentication request
+      beforeEach((done) => {
+         request.get({         // mock authentication
+            url: "http://localhost:3000/auth/fake",
+            form: {
+              role: this.user.role,     // mock authenticate as previous user
+              userId: this.user.id,
+              email: this.user.email
+            }
+          },
+            (err, res, body) => {
+              done();
+            }
+          );
+        });
+      describe("POST /topics/:topicId/posts/:id/destroy", () => {
+
+        it("should delete the post with the associated ID", (done) => {
+
+          expect(this.post.id).toBe(1);
+
+          request.post(`${base}/${this.topic.id}/posts/${this.post.id}/destroy`, (err, res, body) => {
+
+            Post.findById(1)
+            .then((post) => {
+              expect(err).toBeNull();
+              expect(post).toBeNull();
+              done();
+            })
+          });
+
+        });
+
+      });
+      describe("GET /topics/:topicId/posts/:id/edit", () => {
+
+        it("should render a view with an edit post form", (done) => {
+          request.get(`${base}/${this.topic.id}/posts/${this.post.id}/edit`, (err, res, body) => {
+            expect(err).toBeNull();
+            expect(body).toContain("Edit Post");
+            expect(body).toContain("Snowball Fighting");
+            done();
+          });
+        });
+
+      });
+      describe("POST /topics/:topicId/posts/:id/update", () => {
+
+         it("should return a status code 302", (done) => {
+           request.post({
+             url: `${base}/${this.topic.id}/posts/${this.post.id}/update`,
+             form: {
+               title: "Snowman Building Competition",
+               body: "I love watching them melt slowly."
+             }
+           }, (err, res, body) => {
+             expect(res.statusCode).toBe(302);
+             done();
+           });
+         });
+
+         it("should update the post with the given values", (done) => {
+             const options = {
+               url: `${base}/${this.post.topicId}/posts/${this.post.id}/update`,
+               form: {
+                 title: "Snowman Building Competition",
+                 body: "I love watching them melt quickly."
+               }
+             };
+             request.post(options,
+               (err, res, body) => {
+
+               expect(err).toBeNull();
+
+               Post.findOne({
+                 where: {id: this.post.id}
+               })
+               .then((post) => {
+                 expect(post.title).toBe("Snowman Building Competition");
+                 done();
+               });
+             });
+         });
+
+       });
+     });
 });
