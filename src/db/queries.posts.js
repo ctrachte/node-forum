@@ -43,11 +43,10 @@ module.exports = {
       callback(err);
     });
   },
-  updatePost(id, updatedPost, callback){
+  updatePost(req, updatedPost, callback){
 
     return Post.findById(req.params.id)
     .then((post) => {
-
       if(!post){
         return callback("Post not found");
       }
