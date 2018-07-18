@@ -17,7 +17,8 @@ describe("routes : posts", () => {
      sequelize.sync({force: true}).then((res) => {
        User.create({
          email: "starman@tesla.com",
-         password: "Trekkie4lyfe"
+         password: "Trekkie4lyfe",
+         role: "admin"
        })
        .then((user) => {
          this.user = user;
@@ -34,7 +35,11 @@ describe("routes : posts", () => {
            include: {
             model: Post,
             as: "posts"
-           }
+          },
+            include: {
+              model: User,
+              as: "userId"
+            }
          })
          .then((topic) => {
            this.topic = topic;
