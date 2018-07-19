@@ -65,7 +65,6 @@ describe("routes : comments", () => {
       });
     });
   });
-
   //Begin test suites for a guest user (not signed in)
   describe("guest attempting to perform CRUD actions for Comment", () => {
 
@@ -132,8 +131,7 @@ describe("routes : comments", () => {
       });
     });
   });
-  
-  //Begin test suites for a member/admin user (signed in)
+  //Begin CRUD test suites for a member user (signed in) ON THEIR OWN COMMENTS
   describe("signed in user performing CRUD actions for Comment", () => {
 
     beforeEach((done) => {    // before each suite in this context
@@ -176,10 +174,115 @@ describe("routes : comments", () => {
         );
       });
     });
+    describe("POST /topics/:topicId/posts/:postId/comments/:id/destroy", () => {
+
+      it("should delete the user's comment associated with the ID", (done) => {
+        Comment.all()
+        .then((comments) => {
+          const commentCountBeforeDelete = comments.length;
+
+          expect(commentCountBeforeDelete).toBe(1);
+
+          request.post(
+           `${base}${this.topic.id}/posts/${this.post.id}/comments/${this.comment.id}/destroy`,
+            (err, res, body) => {
+            expect(res.statusCode).toBe(302);
+            Comment.all()
+            .then((comments) => {
+              expect(err).toBeNull();
+              expect(comments.length).toBe(commentCountBeforeDelete - 1);
+              done();
+            })
+
+          });
+        })
+
+      });
+
+    });
+  });
+  //Begin CRUD test suites for a member user (signed in) ON OTHER USERS COMMENTS
+  describe("signed in user performing CRUD actions for Comment", () => {
+
+    // before each test in admin user context, send an authentication request
+    // to a route we will create to mock an authentication request
+     beforeEach((done) => {
+      User.create({
+        email: "otherguest@example.com",
+        password: "password1",
+        role: "member"
+      })
+      .then((user) => {
+        request.get({         // mock authentication
+          url: "http://localhost:3000/auth/fake",
+          form: {
+            role: user.role,     // mock authenticate as admin user
+            userId: user.id,
+            email: user.email
+          }
+        },
+          (err, res, body) => {
+            done();
+          }
+        );
+      });
+     });
+
+     describe("POST /topics/:topicId/posts/:postId/comments/:id/destroy", () => {
+
+       it("should not delete another user's comment with the associated ID", (done) => {
+         Comment.all()
+         .then((comments) => {
+           const commentCountBeforeDelete = comments.length;
+
+           expect(commentCountBeforeDelete).toBe(1);
+
+           request.post(
+             `${base}${this.topic.id}/posts/${this.post.id}/comments/${this.comment.id}/destroy`,
+             (err, res, body) => {
+             Comment.all()
+             .then((comments) => {
+               expect(err).toBeNull();
+               expect(comments.length).toBe(commentCountBeforeDelete);
+               done();
+             })
+
+           });
+         })
+       });
+     });
+
+  }); //end context for signed in user ON OTHERS COMMENTS
+  //Begin test suites for a Admin user
+  describe("Admin user performing CRUD actions for Comment", () => {
+
+    // before each test in admin user context, send an authentication request
+    // to a route we will create to mock an authentication request
+     beforeEach((done) => {
+      User.create({
+        email: "admin@example.com",
+        password: "123456",
+        role: "admin"
+      })
+      .then((user) => {
+        request.get({         // mock authentication
+          url: "http://localhost:3000/auth/fake",
+          form: {
+            role: user.role,     // mock authenticate as admin user
+            userId: user.id,
+            email: user.email
+          }
+        },
+          (err, res, body) => {
+            done();
+          }
+        );
+      });
+     });
 
     describe("POST /topics/:topicId/posts/:postId/comments/:id/destroy", () => {
 
-      it("should delete the comment with the associated ID", (done) => {
+      it("should delete the comment associated with the ID, regardless of userId", (done) => {
         Comment.all()
         .then((comments) => {
           const commentCountBeforeDelete = comments.length;
@@ -204,6 +307,6 @@ describe("routes : comments", () => {
 
     });
 
-  }); //end context for signed in user/admin
+  }); //end context for signed in admin
 
 });
