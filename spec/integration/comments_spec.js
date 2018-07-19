@@ -200,7 +200,7 @@ describe("routes : comments", () => {
       });
 
     });
-  });
+  }); // End CRUD test suits for a user ON THEIR OWN COMMENTS
   //Begin CRUD test suites for a member user (signed in) ON OTHER USERS COMMENTS
   describe("signed in user performing CRUD actions for Comment", () => {
 
