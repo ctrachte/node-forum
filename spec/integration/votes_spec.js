@@ -141,7 +141,74 @@ describe("routes : votes", () => {
         );
       });
     });
-
+    describe("GET /topics/:topicId/posts/:postId/votes/upvote", () => {
+      // upvote controller action hardcoded to value of "1" so this should be impossible
+      it("should only create an upvote value of 1", (done) => {
+        const options = {
+          url: `${base}${this.topic.id}/posts/${this.post.id}/votes/upvote`,
+          form: {
+            value: 3,     // attempt to pass invalid upvote value
+            userId: this.user.id,
+            postId: this.post.id
+          }
+        };
+        request.get(options,
+          (err, res, body) => {
+            Vote.findOne({
+              where: {
+                userId: this.user.id,
+                postId: this.post.id
+              }
+            })
+            .then((vote) => {               // confirm that upvote was created with proper value
+              expect(vote).not.toBeNull();
+              expect(vote.value).toBe(1);
+              expect(vote.userId).toBe(this.user.id);
+              expect(vote.postId).toBe(this.post.id);
+              done();
+            })
+            .catch((err) => {
+              console.log(err);
+              done();
+            });
+          }
+        );
+      });
+    });
+    describe("GET /topics/:topicId/posts/:postId/votes/upvote", () => {
+      it("should only create one upvote per user, per post", (done) => {
+        const options = {
+          url: `${base}${this.topic.id}/posts/${this.post.id}/votes/upvote`,
+          form: {
+            userId: this.user.id,
+            postId: this.post.id
+          }
+        };
+        Vote.create({ // create an initial upvote for current user
+          value: 1,
+          userId: this.user.id,
+          postId: this.post.id
+        });
+        request.get(options, // same user attempts to upvote a second time
+          (err, res, body) => {
+            Vote.findOne({
+              where: {
+                userId: this.user.id,
+                postId: this.post.id
+              }
+            })
+            .then((vote) => { // confirm that only one upvote was created with proper value
+              expect(vote.value).toBe(1);
+              done();
+            })
+            .catch((err) => {
+              console.log(err);
+              done();
+            });
+          }
+        );
+      });
+    });
     describe("GET /topics/:topicId/posts/:postId/votes/downvote", () => {
 
       it("should create a downvote", (done) => {
