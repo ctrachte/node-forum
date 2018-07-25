@@ -242,7 +242,7 @@ describe("Vote", () => {
 
   });
   describe("#getPoints()", () => {
-    it("Assignment: should return the total points for a post", done => {
+    it("should return the total points for a given post", done => {
       Vote.create({
         value: 1,
         userId: this.user.id,
@@ -251,7 +251,7 @@ describe("Vote", () => {
       .then((vote) => {
         this.comment.getPost()
         .then((associatedPost) => {
-          expect(associatedPost.getPoints(this.post, vote)).toBe("My first visit to Proxima Centauri b");
+          expect(associatedPost.getPoints()).toBe(1);
           done();
         });
       })
