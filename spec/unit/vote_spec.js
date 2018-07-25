@@ -241,4 +241,26 @@ describe("Vote", () => {
     });
 
   });
+  describe("#getPoints()", () => {
+
+    it("should return the total votes of the associated post", (done) => {
+      Vote.create({
+        value: 1,
+        userId: this.user.id,
+        postId: this.post.id
+      })
+      .then((vote) => {
+        this.comment.getPost()
+        .then((associatedPost) => {
+          expect(associatedPost.getPoints()).toBe(1);
+          done();
+        });
+      })
+      .catch((err) => {
+        console.log(err);
+        done();
+      });
+    });
+
+  });
 });

@@ -111,7 +111,6 @@ describe("routes : votes", () => {
         }
       );
     });
-
     describe("GET /topics/:topicId/posts/:postId/votes/upvote", () => {
 
       it("should create an upvote", (done) => {
