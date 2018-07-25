@@ -242,8 +242,7 @@ describe("Vote", () => {
 
   });
   describe("#getPoints()", () => {
-
-    it("should return the total votes of the associated post", (done) => {
+    it("Assignment: should return the total points for a post", done => {
       Vote.create({
         value: 1,
         userId: this.user.id,
@@ -252,15 +251,52 @@ describe("Vote", () => {
       .then((vote) => {
         this.comment.getPost()
         .then((associatedPost) => {
-          expect(associatedPost.getPoints()).toBe(1);
+          expect(associatedPost.getPoints(this.post, vote)).toBe("My first visit to Proxima Centauri b");
           done();
         });
       })
-      .catch((err) => {
+      .catch(err => {
         console.log(err);
         done();
       });
     });
+  });
 
+  describe("#hasUpvoteFor()", () => {
+    it("Should return true if the user has upvoted on the associated post", done => {
+      Vote.create({
+        value: 1,
+        userId: this.user.id,
+        postId: this.post.id
+      })
+      .then(vote => {
+        let upvote = this.post.hasUpvoteFor(this.user.id, vote);
+        expect(upvote).toBe(true);
+        done();
+      })
+      .catch(err => {
+        console.log(err);
+        done();
+      });
+    });
+  });
+
+  describe("#hasDownvoteFor()", () => {
+    it("Should return true if the user has downvoted on the associated post", done => {
+      Vote.create({
+        value: -1,
+        userId: this.user.id,
+        postId: this.post.id
+      })
+        .then(vote => {
+          let downvote = this.post.hasDownvoteFor(this.user.id, vote);
+          expect(downvote).toBe(true);
+          done();
+        })
+        .catch(err => {
+          console.log(err);
+          done();
+        });
+    });
   });
 });

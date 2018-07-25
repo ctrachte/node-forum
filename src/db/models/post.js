@@ -19,6 +19,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   }, {});
   Post.associate = function(models) {
+    // associations can be defined here
     Post.belongsTo(models.Topic, {
       foreignKey: "topicId",
       onDelete: "CASCADE"
@@ -36,13 +37,24 @@ module.exports = (sequelize, DataTypes) => {
       as: "votes"
     });
   };
-  Post.prototype.getPoints = function(){
-
-    if(this.votes.length === 0) return 0
-
+  Post.prototype.getPoints = function() {
+    if (this.votes.length === 0) return 0;
     return this.votes
-      .map((v) => { return v.value })
-      .reduce((prev, next) => { return prev + next });
+      .map(v => {
+        return v.value;
+      })
+      .reduce((prev, next) => {
+        return prev + next;
+      });
   };
+
+  Post.prototype.hasUpvoteFor = function(userId, vote) {
+    return vote.userId === userId && vote.value === 1 ? true : false;
+  };
+
+  Post.prototype.hasDownvoteFor = function(userId, vote) {
+    return vote.userId === userId && vote.value === -1 ? true : false;
+  };
+
   return Post;
 };
