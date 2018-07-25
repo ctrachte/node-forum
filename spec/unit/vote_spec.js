@@ -241,26 +241,6 @@ describe("Vote", () => {
     });
 
   });
-  describe("#getPoints()", () => {
-    it("should return the total points for a given post", done => {
-      Vote.create({
-        value: 1,
-        userId: this.user.id,
-        postId: this.post.id
-      })
-      .then((vote) => {
-        this.comment.getPost()
-        .then((associatedPost) => {
-          expect(associatedPost.getPoints()).toBe(1);
-          done();
-        });
-      })
-      .catch(err => {
-        console.log(err);
-        done();
-      });
-    });
-  });
 
   describe("#hasUpvoteFor()", () => {
     it("Should return true if the user has upvoted on the associated post", done => {

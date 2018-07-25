@@ -237,6 +237,28 @@ describe("routes : votes", () => {
         );
       });
     });
-
+    describe("#getPoints()", () => {
+      it("should return the total points for a given post", done => {
+        const options = {
+          url: `${base}${this.topic.id}/posts/${this.post.id}/votes/downvote`
+        };
+        request.get(options,
+          (err, res, body) => {
+            Post.findOne({
+              where: {
+                userId: this.user.id,
+              }
+            })
+        .then((associatedPost) => {
+            expect(associatedPost.getPoints()).toBe(1);
+            done();
+          })
+          .catch(err => {
+            console.log(err);
+            done();
+          });
+        })
+      });
+    });
   }); //end context for signed in user
 });
