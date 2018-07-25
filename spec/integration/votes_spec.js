@@ -244,20 +244,19 @@ describe("routes : votes", () => {
         };
         request.get(options,
           (err, res, body) => {
-            Post.findOne({
-              where: {
-                userId: this.user.id,
-              }
-            })
-        .then((associatedPost) => {
-            expect(associatedPost.getPoints()).toBe(1);
-            done();
+            Vote.findAll({ include: [ Post ] })
+        .then((votes) => {
+            votes[0].getPost()
+            .then(post => {
+              expect(post.getPoints()).toBe(1);
+              done();
+              })
+            .catch(err => {
+              console.log(err);
+              done();
+            });
           })
-          .catch(err => {
-            console.log(err);
-            done();
-          });
-        })
+        });
       });
     });
   }); //end context for signed in user
